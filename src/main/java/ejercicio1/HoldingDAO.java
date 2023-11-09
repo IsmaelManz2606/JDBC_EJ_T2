@@ -7,8 +7,6 @@ public class HoldingDAO {
     private String usuario;
     private String password;
 
-    private String pistolas;
-
 
     public HoldingDAO(String host, String base_datos, String usuario, String password) {
         this.host = host;
