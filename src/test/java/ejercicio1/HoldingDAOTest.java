@@ -1,6 +1,5 @@
 package ejercicio1;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utilidades.BasesDatos;
@@ -20,6 +19,8 @@ class HoldingDAOTest {
 
     @Test
     void agregarEmpleado() {
+        dao.agregarEmpleado("Ismael", "Manzano", "2003-06-26", "Desarrollador",
+                "ismaelmanzanoatlantida@gmail.com", "2023/11/08", 2000.0, "CodeCrafters");
     }
 
     @Test

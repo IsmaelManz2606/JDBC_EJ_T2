@@ -1,5 +1,7 @@
 package ejercicio1;
 
+import java.sql.*;
+
 public class HoldingDAO {
 
     private String host;
@@ -15,9 +17,53 @@ public class HoldingDAO {
         this.password = password;
     }
 
-    public void agregarEmpleado(String nombre,String apellidos,String fecha_nacimiento,String categoria,String email,String contratacion,Double salario,String empresa){
+    public void agregarEmpleado(String nombre, String apellidos, String fecha_nacimiento, String categoria, String email, String contratacion, Double salario, String empresa) {
+        Connection conexion = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conexion = establecerConexion();
+            Integer id_empresa = devolverIdEmpresaNombre(empresa, conexion);
 
+            if (id_empresa != null){
+                String existe  = "SELECT email FROM empleados WHERE email=?";
+                preparedStatement = conexion.prepareStatement(existe);
+                preparedStatement.setString(1, email);
+                resultSet = preparedStatement.executeQuery();
+                if (!resultSet.next()){
+
+
+            String sql = "INSERT INTO empleados (fecha_nacimiento, category, email, nombre, apellidos, fecha_contratacion, salario, empresa_id) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                preparedStatement = conexion.prepareStatement(sql);
+                preparedStatement.setString(1, fecha_nacimiento);
+                preparedStatement.setString(2, categoria);
+                preparedStatement.setString(3, email);
+                preparedStatement.setString(4, nombre);
+                preparedStatement.setString(5, apellidos);
+                preparedStatement.setString(6, contratacion);
+                preparedStatement.setDouble(7, salario);
+                preparedStatement.setInt(8, id_empresa);
+
+                preparedStatement.executeUpdate();
+                System.out.println("Empleado agregado con éxito.");
+
+                }
+                else {
+                    System.out.println("Este empleado ya existe");
+                }
+            }else {
+                System.out.println("No se encuentra a la empresa");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            cerrarConexion(conexion, preparedStatement, resultSet);
+        }
     }
+
+
 
     public void subirSueldo(String empresa,Double subida){
 
@@ -53,6 +99,36 @@ public class HoldingDAO {
 
     public void BorrarAño(Integer año){
 
+    }
+
+    private Integer devolverIdEmpresaNombre(String empresa, Connection conexion) {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Integer id = null;
+        String existe = "SELECT id FROM empresas WHERE razon_social=?";
+        try {
+            statement = conexion.prepareStatement(existe);
+            statement.setString(1, empresa);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) id = resultSet.getInt("id");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+    public Connection establecerConexion() throws SQLException {
+        return DriverManager.getConnection("jdbc:mysql://" + this.host + "/" + this.base_datos, this.usuario, this.password);
+    }
+    public void cerrarConexion(Connection conexion, PreparedStatement sentencia, ResultSet resultado) {
+        try {
+            if (resultado != null) resultado.close();
+            if (sentencia != null) sentencia.close();
+            if (conexion != null) conexion.close();
+        } catch (SQLException exception) {
+            System.out.println("Error al cerrar la conexión\n" + exception.getMessage());
+            exception.printStackTrace();
+        }
     }
 
 }
