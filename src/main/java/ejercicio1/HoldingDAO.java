@@ -101,6 +101,44 @@ public class HoldingDAO {
     }
 
     public void trasladarEmpleado(String emplead,String empresa){
+        Connection conexion = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            conexion = establecerConexion();
+            Integer id_empresa = devolverIdEmpresaNombre(empresa, conexion);
+
+            if (id_empresa != null){
+                //aqui ya existe la empresa comprobada
+                //actualizo de la tabla empleado y cojo el id de la empresa que es el que tengo que cambiar
+                //con el id de empleado que es "id" y abajo añadirlo al preparedstatement
+                String updatesql = "UPDATE empleados SET empresa_id =? WHERE nombre =?";
+                preparedStatement = conexion.prepareStatement(updatesql);
+                preparedStatement.setInt(1, id_empresa);
+                preparedStatement.setString(2, emplead);
+
+                int filas =preparedStatement.executeUpdate();
+                System.out.println("Empresa actualizada");
+
+                if (filas>0){
+                    System.out.println("Se han actualizado " + filas + " filas");
+                }else{
+                    System.out.println("No se ha actualizado ninguna fila");
+                }
+
+            }else{
+                System.out.println();
+            }
+
+
+
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally {
+            cerrarConexion(conexion, preparedStatement, resultSet);
+        }
 
     }
 

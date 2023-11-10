@@ -30,6 +30,7 @@ class HoldingDAOTest {
 
     @Test
     void trasladarEmpleado() {
+        dao.trasladarEmpleado("Juan", "CodeCrafters");
     }
 
     @Test
