@@ -25,6 +25,7 @@ class HoldingDAOTest {
 
     @Test
     void subirSueldo() {
+        dao.subirSueldo("CodeCrafters", 100.0);
     }
 
     @Test

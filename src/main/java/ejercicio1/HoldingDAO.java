@@ -30,9 +30,9 @@ public class HoldingDAO {
                 preparedStatement = conexion.prepareStatement(existe);
                 preparedStatement.setString(1, email);
                 resultSet = preparedStatement.executeQuery();
+
+
                 if (!resultSet.next()){
-
-
             String sql = "INSERT INTO empleados (fecha_nacimiento, category, email, nombre, apellidos, fecha_contratacion, salario, empresa_id) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 preparedStatement = conexion.prepareStatement(sql);
@@ -65,8 +65,39 @@ public class HoldingDAO {
 
 
 
-    public void subirSueldo(String empresa,Double subida){
+    public void subirSueldo(String empresa,Double subida) {
+        Connection conexion = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
+        try {
+            conexion = establecerConexion();
+            Integer id_empresa = devolverIdEmpresaNombre(empresa, conexion);
+
+            if (id_empresa != null) {
+
+                    String updatesql = "UPDATE empleados SET salario = salario + ? WHERE empresa_id=?";
+                    preparedStatement = conexion.prepareStatement(updatesql);
+                    preparedStatement.setDouble(1, subida);
+                    preparedStatement.setInt(2, id_empresa);
+                    int filas =preparedStatement.executeUpdate();
+                    System.out.println("Sueldo actualizado con éxito.");
+
+                    if (filas>0){
+                        System.out.println("Se han actualizado " + filas + " filas");
+                    }else{
+                        System.out.println("No se ha actualizado ninguna fila");
+                    }
+
+            }else{
+                    System.out.println("Esta empresa no existe");
+                }
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+        finally{
+            cerrarConexion(conexion, preparedStatement, resultSet);
+        }
     }
 
     public void trasladarEmpleado(String emplead,String empresa){
