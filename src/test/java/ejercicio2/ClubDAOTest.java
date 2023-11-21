@@ -23,10 +23,12 @@ class ClubDAOTest {
 
     @Test
     void crearEvento() {
+        dao.crearEvento("4X4", "2023-11-30");
     }
 
     @Test
     void añadirSocio() {
+        dao.añadirSocio("Ismael", "2003-06-26");
     }
 
     @Test
