@@ -33,6 +33,7 @@ class ClubDAOTest {
 
     @Test
     void apuntarseEvento() {
+        dao.apuntarseEvento("Jose", "Fiesta de la espuma");
     }
 
     @Test

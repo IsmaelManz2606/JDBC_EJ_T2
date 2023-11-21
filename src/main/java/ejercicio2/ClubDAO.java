@@ -78,10 +78,61 @@ public class ClubDAO {
         }
     }
 
+    public void apuntarseEvento(String socio, String evento) {
+        Connection conexion = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
 
-    public void apuntarseEvento(String socio,String evento){
+        try {
+            conexion = establecerConexion();
+            System.out.println("Conexión establecida correctamente.");
 
+            Integer idSocio = buscarSocioPorNombre(socio, conexion);
+            Integer idEvento = devolverIdEventoNombre(evento, conexion);
+
+            if (idSocio != null && idEvento != null) {
+                // Verificar si ya está inscrito
+                if (!estaInscrito(idSocio, idEvento, conexion)) {
+                    String sql = "INSERT INTO INSCRIPCIONES VALUES (DEFAULT, ?, ?)";
+                    preparedStatement = conexion.prepareStatement(sql);
+                    preparedStatement.setInt(1, idSocio);
+                    preparedStatement.setInt(2, idEvento);
+
+                    preparedStatement.executeUpdate();
+                    System.out.println("Socio inscrito en el evento con éxito.");
+                } else {
+                    System.out.println("Este socio ya está inscrito en el evento.");
+                }
+            } else {
+                System.out.println("Socio o evento no encontrado.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            cerrarConexion(conexion, preparedStatement, resultSet);
+        }
     }
+    private boolean estaInscrito(Integer idSocio, Integer idEvento, Connection conexion) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        boolean estaInscrito = false;
+
+        String sql = "SELECT id FROM INSCRIPCIONES WHERE socio=? AND evento=?";
+        try {
+            statement = conexion.prepareStatement(sql);
+            statement.setInt(1, idSocio);
+            statement.setInt(2, idEvento);
+            resultSet = statement.executeQuery();
+
+            estaInscrito = resultSet.next();
+        } finally {
+            if (resultSet != null) resultSet.close();
+            if (statement != null) statement.close();
+        }
+
+        return estaInscrito;
+    }
+
 
     public String eventosSocio(String socio){
         return null;
