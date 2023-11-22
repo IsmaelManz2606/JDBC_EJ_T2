@@ -33,19 +33,23 @@ class ClubDAOTest {
 
     @Test
     void apuntarseEvento() {
-        dao.apuntarseEvento("Jose", "Fiesta de la espuma");
+        dao.apuntarseEvento("Jose","Partido de futbol sala");
     }
 
     @Test
     void eventosSocio() {
+        String eventos = dao.eventosSocio("Juan");
+        System.out.println("Eventos de Juan:\n" + eventos);
+
+        assertEquals("Fiesta de la espuma\n", eventos);
+        assertEquals("Cata de vinos\n", eventos);
     }
 
     @Test
-    void sociosEvento() {
-    }
+    void resumenEventos() {
+        String resumen = dao.resumenEventos();
+        System.out.println("Resumen de Eventos:\n" + resumen);
 
-    @Test
-    void resumentEventos() {
     }
 
     @Test
@@ -54,6 +58,9 @@ class ClubDAOTest {
 
     @Test
     void eventoMultitudinario() {
+        String valor_esperado="Fiesta de la espuma";
+
+        assertEquals(valor_esperado,dao.eventoMultitudinario());
     }
 
     @Test
@@ -62,6 +69,9 @@ class ClubDAOTest {
 
     @Test
     void mejorValorado() {
+        String valor_esperado="Partido de futbol sala";
+
+        assertEquals(valor_esperado,dao.mejorValorado());
     }
 
     @Test

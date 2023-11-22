@@ -4,13 +4,39 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 public class BasesDatos {
+
+    public static Connection establecerConexion(String host,String base_datos,String usuario,String password) throws SQLException {
+        return DriverManager.getConnection("jdbc:mysql://" + host + "/" + base_datos, usuario, password);
+    }
+
+    public static void cerrarConexion(Connection conexion, PreparedStatement sentencia, ResultSet resultado) {
+        try {
+            if (resultado != null) resultado.close();
+
+            if (sentencia != null)sentencia.close();
+
+            if (conexion != null) conexion.close();
+
+        } catch (SQLException exception) {
+            System.out.println("Error al cerrar la conexión\n" + exception.getMessage());
+            exception.printStackTrace();
+        }
+    }
+
+    public static void cerrarPreparedResultSet(PreparedStatement p,ResultSet r) {
+        try {
+            if (p != null) p.close();
+            if (r != null) r.close();
+        } catch (SQLException exception) {
+            System.out.println("Error al cerrar el resultset\n" + exception.getMessage());
+            exception.printStackTrace();
+        }
+    }
+
+
 
     public static void volcarDatos(String ruta_script,String base_datos) {
         Connection conexion = null;
